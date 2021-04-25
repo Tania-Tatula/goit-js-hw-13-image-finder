@@ -3,7 +3,6 @@ const refs = {
   searchInput: document.querySelector('.search-form input'),
   listScroll: document.querySelector('.intro'),
   listObserverRef: document.querySelector('.list-observer'),
-  linkBigImg: document.querySelector('.photo-card'),
 };
 
 export default refs;
