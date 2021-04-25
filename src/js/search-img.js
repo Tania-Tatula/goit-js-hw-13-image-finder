@@ -1,70 +1,48 @@
-import fetchImg from './apiService.js';
+import NewsfetchImg from './apiService.js';
 import refs from './refs.js';
 import debounce from 'lodash.debounce';
 import {notification, myError} from './pnotify.js';
 import imagesListTpl from '../templates/img-card.hbs'
 
+const newsfetchImg = new NewsfetchImg();
 
-// onSearch("кролик");
-let images = [];
-let page = 1;
 
 // function observerHandler(entries) {
+    
 //     if(entries[0].isIntersecting){
 //         page += 1
+       
+//         fetchRefs(receivesTextFromInput, page);
 //     }
-//     return page;
+//     fetchRefs(receivesTextFromInput, page);
 // }
 
 // const observer = new IntersectionObserver(observerHandler);
 // observer.observe(refs.listObserverRef);
 
 
-refs.searchInput.addEventListener('input', receivesTextFromInput);
 
-function receivesTextFromInput(evt) {
+const receivesTextFromInput = (evt) => {
   evt.preventDefault();
-  const nameSearchImg = evt.currentTarget.value;
-  debounsOnInput(nameSearchImg);
+  clearImgPage()
+  newsfetchImg.resetPage();
+  newsfetchImg.query = evt.currentTarget.value;
+  debounsOnInput();    
 
-  window.addEventListener("scroll", scroll);
-  function scroll(){
-           
-    // let page = 0;
-   
-    const contentHeight = refs.listScroll.offsetHeight;      // 1) высота блока контента вместе с границами
-    const yOffset       = window.pageYOffset;      // 2) текущее положение скролбара
-    const window_height = window.innerHeight;      // 3) высота внутренней области окна документа
-    const y             = yOffset + window_height;
-   
-    // если пользователь достиг конца
-    if(y >= contentHeight)
-    {
-        page += 1;
-        fetchRefs(nameSearchImg, page);
-
-    }
 };
 
-//   return nameSearchImg;
-}
+refs.searchInput.addEventListener('input', receivesTextFromInput);
+refs.listObserverRef.addEventListener('click', onSearch)
 
-function onFetchError(error) {
-    myError();
-}
 
 const debounsOnInput = debounce(onSearch, 1000);
 
-function onSearch(nameSearchImg) {
+function onSearch() {
  try {
-    // const {hits} = await fetchImg(nameSearchImg, page);
-    // // images =[...images, ...hits]
-    // console.log(fetchImg(nameSearchImg, page));
-    // renderImgList(hits);
-    fetchRefs(nameSearchImg);
+    fetchRefs();
      
  } catch (error) {
-    onFetchError(error);
+    myError();
  } finally{
     refs.searchInput.value = '';
  };
@@ -75,36 +53,18 @@ function renderImgList(hits){
     const renderImgCard = imagesListTpl(hits);
     refs.cardImg.insertAdjacentHTML('beforeend', renderImgCard);
      if(!hits.length){
-        onFetchError(error);
+        myError();
 }
 }
 
-async function fetchRefs(nameSearchImg, page) {
-    const {hits} = await fetchImg(nameSearchImg, page);
-    // images =[...images, ...hits]
-    console.log(fetchImg(nameSearchImg, page));
+async function fetchRefs() {
+    const {hits} = await newsfetchImg.fetchImg();
     renderImgList(hits);
+
+
+};
+
+
+function clearImgPage() {
+    refs.cardImg.innerHTML ='';
 }
-
-// window.addEventListener("scroll", scroll);
-
-
-// function scroll(){
-           
-//     // let page = 0;
-   
-//     const contentHeight = refs.listScroll.offsetHeight;      // 1) высота блока контента вместе с границами
-//     const yOffset       = window.pageYOffset;      // 2) текущее положение скролбара
-//     const window_height = window.innerHeight;      // 3) высота внутренней области окна документа
-//     const y             = yOffset + window_height;
-   
-//     // если пользователь достиг конца
-//     if(y >= contentHeight)
-//     {
-//         page += 1;
-//         onSearch();
-
-//     }
-// };
-
-
