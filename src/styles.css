@@ -31,7 +31,7 @@ h1 {
   text-shadow: 0 2px white, 0 3px #777;
 }
 
-input[type='text'] {
+input {
   margin: 0px auto;
   display: block;
   width: 50%;
