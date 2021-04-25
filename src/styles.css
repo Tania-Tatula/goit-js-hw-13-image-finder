@@ -45,7 +45,7 @@ input {
   padding-left: 40px;
 }
 
-input[type='text']:focus {
+input:focus {
   border: 3px solid #555;
 }
 
