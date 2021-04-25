@@ -62,7 +62,7 @@ function clearImgPage() {
 function onScroll() {
   setTimeout(() => {
     window.scrollTo({
-      top: 100000,
+      top: document.body.scrollHeight,
       behavior: 'smooth',
     });
   }, 500);
